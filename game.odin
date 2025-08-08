@@ -3,14 +3,14 @@ package main
 import "core:c"
 import rl "vendor:raylib"
 
-world: World
-screen_texture: rl.RenderTexture
-run: bool
-
 WINDOW_WIDTH: i32
 WINDOW_HEIGHT: i32
 SCREEN_WIDTH :: 800
 SCREEN_HEIGHT :: 450
+
+world: World
+screen_texture: rl.RenderTexture
+run: bool
 
 
 init :: proc() {
