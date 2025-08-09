@@ -1,17 +1,25 @@
 package main
 
 import "core:c"
+import "core:math"
 import rl "vendor:raylib"
 
 WINDOW_WIDTH: i32
 WINDOW_HEIGHT: i32
 SCREEN_WIDTH :: 800
 SCREEN_HEIGHT :: 450
+TICK_RATE :: 1.0 / 200.0
 
 world: World
 screen_texture: rl.RenderTexture
 run: bool
+time: Time
 
+Time :: struct {
+	t:               f32,
+	simulation_time: f32,
+	started:         bool,
+}
 
 init :: proc() {
 	WINDOW_WIDTH = 1600
@@ -23,6 +31,20 @@ init :: proc() {
 }
 
 update :: proc() {
+	if !time.started {
+		time.t = f32(rl.GetTime())
+		time.started = true
+	}
+	// input()
+
+	t1 := f32(rl.GetTime())
+	elapsed := math.min(t1 - time.t, 0.25)
+	time.t = t1
+	time.simulation_time += elapsed
+	for time.simulation_time >= TICK_RATE {
+		physics_step()
+		time.simulation_time -= TICK_RATE
+	}
 	render_scene()
 	draw_to_screen()
 }

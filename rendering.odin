@@ -4,8 +4,10 @@ import rl "vendor:raylib"
 
 render_scene :: proc() {
 	rl.BeginTextureMode(screen_texture)
-	rl.ClearBackground({0,12,240,255})
+	rl.ClearBackground({0, 12, 240, 255})
 	// Draw the scene here
+	render_player()
+	//
 	rl.EndTextureMode()
 }
 
