@@ -1,8 +1,23 @@
 package main
 
 import "core:math"
+import l "core:math/linalg"
 import rl "vendor:raylib"
 
+Player :: struct {
+	state:            Player_State,
+	translation:      Vec2,
+	snapshot:         Vec2,
+	velocity:         Vec2,
+	height:           f32,
+	radius:           f32,
+	grounded_lockout: f32,
+}
+
+Player_State :: enum {
+	Grounded,
+	Airborne,
+}
 ////////////// Physics values ///////////////////
 
 // How far can the player jump horizontally (in pixels)
@@ -38,20 +53,6 @@ calculate_max_speed :: proc() -> f32 {
 
 //////////////////////////////////////////////
 
-Player :: struct {
-	state:       Player_State,
-	translation: Vec2,
-	snapshot:    Vec2,
-	velocity:    Vec2,
-	height:      f32,
-	radius:      f32,
-}
-
-Player_State :: enum {
-	Grounded,
-	Airborne,
-}
-
 make_player :: proc(translation: Vec2 = {0, 0}, height: f32 = 20, radius: f32 = 16) -> Player {
 	return Player{translation = translation, height = height, radius = radius}
 }
@@ -67,7 +68,12 @@ render_player :: proc() {
 
 jump :: proc() {
 	player := &world.player
+	if player.grounded_lockout > 0 {
+		player.grounded_lockout = l.clamp(player.grounded_lockout - TICK_RATE, 0, 1)
+	}
 	if is_action_buffered(.Jump) && player.state == .Grounded {
 		player.velocity.y = jump_speed
+		consume_action(.Jump)
+		player.grounded_lockout = 0.15
 	}
 }

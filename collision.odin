@@ -49,9 +49,9 @@ player_collision :: proc() {
 			ground_hits += 1
 		}
 	}
-	if ground_hits > 0 {
+	if ground_hits > 0 && player.grounded_lockout == 0 {
 		player.state = .Grounded
-		player.velocity.y = 0
+		// player.velocity.y = 0
 	} else {
 		player.state = .Airborne
 	}
