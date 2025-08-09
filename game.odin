@@ -4,6 +4,7 @@ import "core:c"
 import "core:math"
 import rl "vendor:raylib"
 
+TILE_SIZE :: 16.0
 WINDOW_WIDTH: i32
 WINDOW_HEIGHT: i32
 SCREEN_WIDTH :: 800
@@ -14,6 +15,7 @@ world: World
 screen_texture: rl.RenderTexture
 run: bool
 time: Time
+input_buffer: Input_Buffer
 
 Time :: struct {
 	t:               f32,
@@ -35,8 +37,7 @@ update :: proc() {
 		time.t = f32(rl.GetTime())
 		time.started = true
 	}
-	// input()
-
+	input()
 	t1 := f32(rl.GetTime())
 	elapsed := math.min(t1 - time.t, 0.25)
 	time.t = t1
@@ -47,6 +48,7 @@ update :: proc() {
 	}
 	render_scene()
 	draw_to_screen()
+	free_all(context.temp_allocator)
 }
 
 shutdown :: proc() {
